@@ -16,6 +16,7 @@ import Reports from "./pages/Report";
 import Profile from "./pages/Profile";
 import Notifications from "./pages/Notification";
 import Promotion from "./pages/Promotiom";
+import PackageDetail from "./pages/Packagedetail";
 
 const App: React.FC = () => {
   const isLogIn = localStorage.getItem("isLogin") === "true";
@@ -33,8 +34,8 @@ const App: React.FC = () => {
               <Route path="/" element={<Home />} />
               <Route path="/Employee" element={<Login />} />
               <Route path="/Home" element={<Home />} />
-              <Route path="/Rigister" element={<Rigister />} />
-              <Route path="/Order" element={<Login />} />
+              <Route path="/Register" element={<Rigister />} />
+              <Route path="/Order" element={<Order />} />
               {/* <Route path="/Member" element={<Login />} /> */}
             </>
           )}
@@ -50,6 +51,9 @@ const App: React.FC = () => {
             <Route path="/Profile" element={<Profile />} />
             <Route path="/Notification" element={<Notifications />} />
             <Route path="/Promotion" element={<Promotion />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/package-detail/:id" element={<PackageDetail />} />
+           
         </Route>
         
         <Route path="*" element={<ErrorPage />} />

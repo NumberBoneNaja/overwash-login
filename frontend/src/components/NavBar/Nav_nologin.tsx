@@ -10,7 +10,7 @@ function Nav_nologin({page}: {  page:string}) {
         <div >
              <>
                
-               <div className="flex justify-between items-center  bg-white h-20 w-full rounded-b-3xl shadow-lg sticky px-10 ">
+               <div className="flex justify-between items-center  bg-white h-20 w-full rounded-b-3xl shadow-lg sticky px-10 top-0 ">
                 <div className="flex justify-center items-center px-5 ">
                     <div>
                     <img src={Logo} alt="" className="w-10"/>    

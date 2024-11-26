@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@100..900&display=swap');
+*{
+    font-family: "Noto Sans Thai", sans-serif;;
+}
+.slick-prev, .slick-next {
+    display: block !important; /* บังคับให้แสดงปุ่ม */
+    z-index: 10; /* ป้องกันการถูกองค์ประกอบอื่นบัง */
+    color: #000; /* เปลี่ยนสีปุ่มให้มองเห็น */
+   
+  }
+  
+  .slick-prev:before, .slick-next:before {
+    font-size: 50px; /* ขนาดของลูกศร */
+    color: #000; /* สีของลูกศร */
+    
+  }
+  .slick-slide > div{
+      margin: 0 30px;
+     
+  }

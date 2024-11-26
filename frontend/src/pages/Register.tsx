@@ -1,9 +1,12 @@
+
+import FormRigister from "../components/Formrigister/Rigister"
+
 function Rigister(){
 
    return (
     <>  
-        <p>rigister page</p>
-
+        <FormRigister/>
+     
     </>
    )
 }

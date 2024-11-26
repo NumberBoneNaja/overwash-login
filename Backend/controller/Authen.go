@@ -16,10 +16,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 func Login(c *fiber.Ctx) error {
-	user := entity.Member{}
-	inputadmin := entity.Employee{}
-	inputexit := entity.Member{}
-	inputadminexit := entity.Employee{}
+	user := entity.User{} // ข้อมูลที่รับมา
+	inputadmin := entity.Employees{} // ข้อมูลที่รับมา
+	inputexit := entity.User{} //เอาไว้เช็ค user
+	inputadminexit := entity.Employees{}//เอาไว้เช็ค admin
 	db := config.DB()
 
 	err := c.BodyParser(&user)
@@ -54,8 +54,8 @@ func Login(c *fiber.Ctx) error {
 	   claims := jwt.MapClaims{
 		   "name":  inputadminexit.Firstname,
 		   "id": inputadminexit.ID,
-		   "role":  inputadminexit.Position,
-		   "exp":   time.Now().Add(time.Minute * 1).Unix(),
+		   "role":  "admin",
+		   "exp":   time.Now().Add(time.Hour * 1).Unix(),
 	   }
    
 	   // Create token
@@ -70,7 +70,7 @@ func Login(c *fiber.Ctx) error {
 	   c.Cookie(&fiber.Cookie{
 		   Name:     "jwt",
 		   Value:    t,
-		   Expires:  time.Now().Add(time.Minute * 1),
+		   Expires:  time.Now().Add(time.Hour * 1),
 		   // HTTPOnly: true,
 	   })
    
@@ -92,7 +92,7 @@ func Login(c *fiber.Ctx) error {
 		   "name":  inputexit.Username,
 		   "id": inputexit.ID,
 		   "role" :"user",
-		   "exp":   time.Now().Add(time.Minute * 1).Unix(),
+		   "exp":   time.Now().Add(time.Hour * 1).Unix(),
 	   }
    
 	   // Create token
@@ -106,7 +106,7 @@ func Login(c *fiber.Ctx) error {
 	   c.Cookie(&fiber.Cookie{
 		   Name:     "jwt",
 		   Value:    t,
-		   Expires:  time.Now().Add(time.Minute * 1),
+		   Expires:  time.Now().Add(time.Hour * 1),
 		   // HTTPOnly: true,
 	   })
    
@@ -138,7 +138,7 @@ func Logout(c *fiber.Ctx) error {
 	c.Cookie(&fiber.Cookie{
 		Name:     "jwt",
 		Value:    "",
-		Expires:  time.Now().Add(-time.Minute),
+		Expires:  time.Now().Add(-time.Hour),
 		HTTPOnly: true,
 	})
 	return c.JSON(fiber.Map{"status": "success", "message": "Logged out successfully"})

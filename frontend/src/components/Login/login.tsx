@@ -143,7 +143,7 @@ function LoginCom() {
 
           <p className="mt-10 text-center text-sm/6 text-gray-500">
             Not a member?{' '}
-            <Link to ="/Rigister" className="font-semibold  hover:text-pink-300 text-pink-500">
+            <Link to ="/Register" className="font-semibold  hover:text-pink-300 text-pink-500">
               Rigister
             </Link>
           </p>

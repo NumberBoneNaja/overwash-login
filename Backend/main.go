@@ -30,19 +30,29 @@ func main() {
 	{
 		rounter.Use(controller.AuthRequired)
 	    rounter.Get("/h", helloHandler)
+
+		// Order
 		rounter.Post("/CreateOrder",controller.CreateOrder)
+		rounter.Post("/CreateOrderDetail",controller.CreateOrderDetail)
+		rounter.Post("/CreateAddOnDetail",controller.CreateAddOnDetail)
 		rounter.Patch("/UpdateOrder/:id",controller.UpdateStatusOrder)
+        rounter.Delete("/DeleteOrderByID/:id",controller.DeleteOrderByID)
+       // Package
 		rounter.Get("/GetAllPackage",controller.GetAllPackage)
 		rounter.Get("/GetClothByPackageID/:id",controller.GetClothByPackageID)
 		rounter.Get("/GetAddOnByPackageID/:id",controller.GetAddOnByPackageID)
-		rounter.Delete("/DeleteOrderByID/:id",controller.DeleteOrderByID)
+
+		//Image
 		rounter.Post("/UploadImage/:id",controller.UploadImage)
 		rounter.Get("/GetImagesByOrderID/:id",controller.GetImagesByOrderID)
 		rounter.Delete("/DeleteImage/:id",controller.DeleteImageByID)
+		rounter.Post("/mutipleupload/:id", controller.UploadMultipleImages)
+
+		//Create package and add on
 		rounter.Post("/CreatePackage",controller.CreatePackage)
 		rounter.Post("/CreateAddOn",controller.CreateAddOn)
 		rounter.Post("/CreateCloth",controller.CreateClothType)
-		rounter.Post("/mutipleupload/:id", controller.UploadMultipleImages)
+		
 	}
 	
 	

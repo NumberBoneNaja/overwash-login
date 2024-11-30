@@ -7,15 +7,17 @@ interface CalculatorAddOn {
     id :string,
     priceSelectedAddOnChange: (selectedItems: number) => void; 
     SelectedAddOn:(selectedAddOn:number[]) => void ;
+    AddOnItem:(AddonItem:AddOnInterface[])=> void;
 }
 
-function AddOn({id,priceSelectedAddOnChange,SelectedAddOn}: CalculatorAddOn){
+function AddOn({id,priceSelectedAddOnChange,SelectedAddOn,AddOnItem}: CalculatorAddOn){
     const [addon,setAddon] = useState<AddOnInterface[]>([]);
     const [selectedAddOn, setSelectedAddOn] = useState<number[]>([]);
     const [totalPrice, setTotalPrice] = useState<number>(0);
     async function GetAddon() {
         const res = await GetAddOnByPackID(Number(id))
         setAddon(res)
+        AddOnItem(res)
 
     }
     useEffect( ()=>{

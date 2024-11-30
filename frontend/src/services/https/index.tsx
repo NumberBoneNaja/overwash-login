@@ -1,3 +1,5 @@
+import { OrderInterface } from "../../interface/IOrder";
+import { OrderDetailInterface } from "../../interface/IOrderDetail";
 
 
 export const ApiUrl= "http://localhost:8000"
@@ -251,6 +253,114 @@ export async function UploadImageByOrderID(id: number, files: FileList) {
     return null;
   }
 }
+
+export async function CreateOrder(data : OrderInterface){
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No token found. Please login.");
+    return null; // ไม่มี token ส่งกลับ null
+  }
+  const requestOptions: RequestInit = {
+    method: "POST",
+    headers: {
+     "Content-Type": "application/json",
+      Authorization: `${Bearer} ${token}`,
+    },
+    credentials: 'include' as RequestCredentials, // <--- Add this type annotation
+    body: JSON.stringify(data),
+  };
+
+  try {
+    const res = await fetch(`${ApiUrl}/CreateOrder`, requestOptions);
+
+    if (res.status == 201) {
+      return await res.json(); // ถ้า upload สำเร็จ ให้ส่งผลลัพธ์จาก server
+    } else if (res.status === 401) {
+      console.log(token);
+      window.location.href = '/login'; // ถ้า session หมดอายุหรือไม่มีสิทธิ์ให้ไปหน้า login
+      return false;
+    } else {
+      console.log("Failed to fetch data:", res.status, res.statusText);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return null;
+  }
+}
+
+export async function CreateOrderDetail(data:OrderDetailInterface){
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No token found. Please login.");
+    return null; // ไม่มี token ส่งกลับ null
+  }
+  const requestOptions: RequestInit = {
+    method: "POST",
+    headers: {
+     "Content-Type": "application/json",
+      Authorization: `${Bearer} ${token}`,
+    },
+    credentials: 'include' as RequestCredentials, // <--- Add this type annotation
+    body: JSON.stringify(data),
+  };
+
+  try {
+    const res = await fetch(`${ApiUrl}/CreateOrderDetail`, requestOptions);
+
+    if (res.status == 201) {
+      return await res.json(); // ถ้า upload สำเร็จ ให้ส่งผลลัพธ์จาก server
+    } else if (res.status === 401) {
+      console.log(token);
+      window.location.href = '/login'; // ถ้า session หมดอายุหรือไม่มีสิทธิ์ให้ไปหน้า login
+      return false;
+    } else {
+      console.log("Failed to fetch data:", res.status, res.statusText);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return null;
+  }
+}
+export async function CreateAddOnDetail(data:OrderDetailInterface){
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No token found. Please login.");
+    return null; // ไม่มี token ส่งกลับ null
+  }
+  const requestOptions: RequestInit = {
+    method: "POST",
+    headers: {
+     "Content-Type": "application/json",
+      Authorization: `${Bearer} ${token}`,
+    },
+    credentials: 'include' as RequestCredentials, // <--- Add this type annotation
+    body: JSON.stringify(data),
+  };
+
+  try {
+    const res = await fetch(`${ApiUrl}/CreateAddOnDetail`, requestOptions);
+
+    if (res.status == 201) {
+      return await res.json(); // ถ้า upload สำเร็จ ให้ส่งผลลัพธ์จาก server
+    } else if (res.status === 401) {
+      console.log(token);
+      window.location.href = '/login'; // ถ้า session หมดอายุหรือไม่มีสิทธิ์ให้ไปหน้า login
+      return false;
+    } else {
+      console.log("Failed to fetch data:", res.status, res.statusText);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return null;
+  }
+}
+
+
+ 
+
 
  
 

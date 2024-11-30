@@ -3,18 +3,25 @@ import { ClothType } from "../../interface/IClothType";
 import { GetClothByPackageID } from "../../services/https";
 import "./Pack.css"
 
+
 interface CalculatorCloth {
     id :string,
-    priceSelectedItemsChange: (selectedItems: number) => void;
-    SelectedCloth:(selectedCloth:number[]) => void ;
+    priceSelectedItemsChange: (selectedItems: number) => void;//รวมราคา
+    SelectedCloth:(selectedCloth:number[]) => void ;//id ที่ถูกเลือก
+    detailClothselected: (detailCloth: ClothSelectedDetail[]) => void;
 }
-
-function Package({id,priceSelectedItemsChange,SelectedCloth}: CalculatorCloth ){
+export interface ClothSelectedDetail{
+    ID: number
+    quantity: number
+    price: number
+}
+function Package({id,priceSelectedItemsChange,SelectedCloth,detailClothselected}: CalculatorCloth ){
     const [cloth, setCloth] = useState<ClothType[]>([]);
     const [counts, setCounts] = useState<{ [key: number]: number }>({});
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
-    const [totalPrice, setTotalPrice] = useState<number>(0);
-    const [priceCloth, setPricecloth] = useState<{ [key: number]: number }>({});
+    // const [totalPrice, setTotalPrice] = useState<number>(0);
+    const [priceCloth, setPricecloth] = useState<{ [key: number]: number }>({});//เอาไว้เแสดงราคาของแต่ละประเภทที่รวมกับจำนวน
+    // const [detailCloth, setDetailCloth] = useState<ClothSelectedDetail[]>([]);//เก็บรายละเอียดการเลือก cloth เพื่อเอาไว้สร้าง order detail
 
    
     async function getCloth(id: number) {
@@ -31,17 +38,22 @@ function Package({id,priceSelectedItemsChange,SelectedCloth}: CalculatorCloth ){
     useEffect(() => {
         getCloth(Number(id));
         console.log("cloth: ",cloth)
+     
     },[]);
     useEffect(() => {
-        const selectedClothDetails = cloth.filter((item) => selectedItems.includes(item.ID || 0));
+        
+        const selectedClothDetails = cloth.filter((item) => selectedItems.includes(item.ID || 0)); //กรองเอาแค่ cloth ที่ถูกเลือก
+    
         const calculatedTotalPrice = selectedClothDetails.reduce((total, item) => {
             const quantity = counts[item.ID || 0] || 0;
             return total + (item.Price || 0) * quantity;
         }, 0);
-        
-        setTotalPrice(calculatedTotalPrice);
+        updateClothDetail();
+        // setTotalPrice(calculatedTotalPrice);
         priceSelectedItemsChange(calculatedTotalPrice); // ส่งราคารวมกลับไปยังคอมโพเนนต์แม่
-    }, [counts, selectedItems, cloth]);
+    }, [counts, selectedItems, cloth,]);
+
+
     // useEffect(() => {
     //   const clothPrices = calculateClothPrices();
     //   setPricecloth(clothPrices); // อัปเดตราคาของผ้าแต่ละประเภท
@@ -53,6 +65,7 @@ function Package({id,priceSelectedItemsChange,SelectedCloth}: CalculatorCloth ){
           ...prevCounts,
           [id]: (prevCounts[id] || 0) + 1,
         }));
+        updatepriceCloth(id,counts[id]+1)
       }
     function minus(id: number) {
     
@@ -60,6 +73,7 @@ function Package({id,priceSelectedItemsChange,SelectedCloth}: CalculatorCloth ){
           ...prevCounts,
           [id]: Math.max((prevCounts[id] || 0) - 1, 0), // ห้ามลดต่ำกว่า 0
         }));
+        updatepriceCloth(id,counts[id]-1)
        
       }
       const handleCheckboxChange = (id: number) => {
@@ -69,10 +83,12 @@ function Package({id,priceSelectedItemsChange,SelectedCloth}: CalculatorCloth ){
             : [...prevSelectedItems, id];//ใช้เก็บค่าที่ถูกเลือก
 
             SelectedCloth(updatedItems)
+            
             setCounts((prevCounts) => {
               const updatedCounts = { ...prevCounts };
               if (updatedItems.includes(id)) {
                 updatedCounts[id] = 1; // กำหนดค่าเริ่มต้นเป็น 1 เมื่อเลือก
+                updatepriceCloth(id,1)
               } else {
                 delete updatedCounts[id]; // ลบค่าเมื่อยกเลิกการเลือก
               }
@@ -82,14 +98,34 @@ function Package({id,priceSelectedItemsChange,SelectedCloth}: CalculatorCloth ){
         });
       };
 
-      function calculateClothPrices(): { [key: number]: number } {
-        const prices = cloth.reduce((acc: { [key: number]: number }, item) => {
-          const quantity = counts[item.ID || 0] || 0; // จำนวนผ้าแต่ละประเภท
-          acc[item.ID || 0] = (item.Price || 0) * quantity; // ราคาผ้าแต่ละประเภท = ราคา * จำนวน
-          return acc;
-        }, {});
-        return prices;
-      }
+      // function calculateClothPrices(): { [key: number]: number } {
+      //   const prices = cloth.reduce((acc: { [key: number]: number }, item) => {
+      //     const quantity = counts[item.ID || 0] || 0; // จำนวนผ้าแต่ละประเภท
+      //     acc[item.ID || 0] = (item.Price || 0) * quantity; // ราคาผ้าแต่ละประเภท = ราคา * จำนวน
+      //     return acc;
+      //   }, {});
+      //   return prices;
+      // }
+      function updatepriceCloth(id:number,quantity:number){
+        const exe = cloth.filter((item)=> item.ID == id )
+        // console.log("exe",(exe[0].Price || 0) * quantity)
+        const totalpertype = (exe[0].Price || 0) * quantity
+        setPricecloth(prevPriceCloth => ({ ...prevPriceCloth, [id]: totalpertype }))
+    }
+    function updateClothDetail() {
+      const selectedClothDetails = cloth
+        .filter((item) => selectedItems.includes(item.ID || 0))
+        .map((item) => ({
+          ID: item.ID || 0,
+          quantity: counts[item.ID || 0] || 0,
+          price: (item.Price || 0) * (counts[item.ID || 0] || 0),
+        }));
+    
+      // setDetailCloth(selectedClothDetails);
+      detailClothselected(selectedClothDetails)
+      console.log(selectedClothDetails)
+    }
+
     
     return(
         <>
@@ -145,13 +181,18 @@ function Package({id,priceSelectedItemsChange,SelectedCloth}: CalculatorCloth ){
                               </div>
                                 
                             </div>
-                             <div className="flex justify-end items-center">
+                             <div className="flex justify-end items-center ">
                               <div>
                                 <p className="text-right">{item.Price} บาท</p>
-                                {/* <p>{priceCloth[item.ID || 0]}</p>  */}
+                                {
+                                  selectedItems.includes(item.ID || 0) && (
+                                    <>
+                                     <p className="font-bold text-[#F73859] ">{priceCloth[item.ID || 0]}</p>  
+                                    </>
+                                  )
+                                }
+                                
                               </div>
-                               
-                              
                              </div>
                            
                         
